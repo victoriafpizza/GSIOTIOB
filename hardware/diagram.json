@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "author": "Sistema de Contratacao IoT",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp32",
+      "top": 0,
+      "left": 0,
+      "attrs": { "name": "ESP32" }
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht",
+      "top": -20,
+      "left": 260,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn",
+      "top": 160,
+      "left": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-mic",
+      "id": "mic",
+      "top": 220,
+      "left": 260,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-ssd1306",
+      "id": "oled",
+      "top": -40,
+      "left": -180,
+      "attrs": { "i2c-address": "0x3C" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledR",
+      "top": 210,
+      "left": -160,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledG",
+      "top": 210,
+      "left": -120,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledB",
+      "top": 210,
+      "left": -80,
+      "attrs": { "color": "blue" }
+    }
+  ],
+  "connections": [
+    ["esp32:3V3", "dht:VCC", "red", ["h40"]],
+    ["esp32:15",  "dht:DATA", "green", ["h20"]],
+    ["esp32:GND", "dht:GND", "black", ["h40"]],
+
+    ["esp32:4",   "btn:1.l", "green", ["v40"]],
+    ["btn:2.r",   "esp32:GND", "black", ["v40", "h-10"]],
+
+    ["esp32:3V3", "mic:VCC", "red", ["h40"]],
+    ["esp32:GND", "mic:GND", "black", ["h40"]],
+    ["esp32:32",  "mic:OUT", "green", ["v40"]],
+
+    ["esp32:3V3", "oled:VCC", "red", ["h-40"]],
+    ["esp32:GND", "oled:GND", "black", ["h-40"]],
+    ["esp32:21",  "oled:SDA", "green", ["v-40"]],
+    ["esp32:22",  "oled:SCL", "yellow", ["v-40"]],
+
+    ["esp32:25",  "ledR:A", "red", ["v40"]],
+    ["ledR:C",    "esp32:GND", "black", ["v40"]],
+
+    ["esp32:26",  "ledG:A", "green", ["v40"]],
+    ["ledG:C",    "esp32:GND", "black", ["v40"]],
+
+    ["esp32:27",  "ledB:A", "blue", ["v40"]],
+    ["ledB:C",    "esp32:GND", "black", ["v40"]]
+  ]
+}
