@@ -1,6 +1,5 @@
 # Sistema Inteligente de Contratação IoT (ESP32)
   
-![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
 ![Status](https://img.shields.io/badge/Status-Concluído-brightgreen)
 ![Version](https://img.shields.io/badge/Versão-1.0-blue)
 ![License](https://img.shields.io/badge/Licença-MIT-green)
@@ -27,8 +26,8 @@ O processo de contratação tradicional é lento, subjetivo e exige muitos recur
 - pouca utilização de dados objetivos
 - processos repetitivos que poderiam ser automatizados
 <p align="center">
-**Para o futuro do trabalho, é essencial criar soluções que tornem a contratação mais eficiente, justa e baseada em dados.**
-
+Para o futuro do trabalho, é essencial criar soluções que tornem a contratação mais eficiente, justa e baseada em dados.
+</p>
 ---
 ## Solução Proposta 
 
