@@ -1,7 +1,9 @@
 # Sistema Inteligente de Contratação IoT (ESP32)
   
 ![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
-![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Concluído-brightgreen)
+![Version](https://img.shields.io/badge/Versão-1.0-blue)
+![License](https://img.shields.io/badge/Licença-MIT-green)
 
 ---
 
@@ -70,7 +72,7 @@ Este projeto apresenta um Sistema Inteligente de Contratação IoT, desenvolvido
 ✔ Sensores funcionando juntos: botão, microfone, DHT22
 ✔ Display OLED com status da contratação
 ✔ LED RGB para estados do processo
-✔ Código organizado e extensível
+✔ Código organizado e extensívelhttps://chatgpt.com/g/g-67edab030ac881918ce8fa5c75a8e1b3-monday
 ✔ Automação compatível com Node-RED, ThingsBoard, HiveMQ, etc.
 
 ✅ O sistema funciona em tempo real ou com vídeos gravados.  
