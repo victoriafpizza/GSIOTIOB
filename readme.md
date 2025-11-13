@@ -66,16 +66,13 @@ Este projeto apresenta um Sistema Inteligente de Contratação IoT, desenvolvido
 
 ## 🔍 Como Funciona
 
-✔ Comunicação MQTT (publicação + comandos)
-✔ Simulação prática no Wokwi
-✔ Sensores funcionando juntos: botão, microfone, DHT22
-✔ Display OLED com status da contratação
-✔ LED RGB para estados do processo
-✔ Código organizado e extensívelhttps://chatgpt.com/g/g-67edab030ac881918ce8fa5c75a8e1b3-monday
-✔ Automação compatível com Node-RED, ThingsBoard, HiveMQ, etc.
-
-✅ O sistema funciona em tempo real ou com vídeos gravados.  
-✅ Encerramento com a tecla `q`.  
+- ✔ Comunicação MQTT (publicação + comandos)
+- ✔ Simulação prática no Wokwi
+- ✔ Sensores funcionando juntos: botão, microfone, DHT22
+- ✔ Display OLED com status da contratação
+- ✔ LED RGB para estados do processo
+- ✔ Código organizado e extensívelhttps://chatgpt.com/g/g-67edab030ac881918ce8fa5c75a8e1b3-monday
+- ✔ Automação compatível com Node-RED, ThingsBoard, HiveMQ, etc.
 
 ---
 
@@ -103,7 +100,7 @@ Este projeto apresenta um Sistema Inteligente de Contratação IoT, desenvolvido
 ---
 ## ⚙️ Como Rodar o Projeto
 
-### 1️⃣ No Wokwi
+### No Wokwi
 
 - Crie um novo projeto com ESP32.
 - Substitua o arquivo criado por:
