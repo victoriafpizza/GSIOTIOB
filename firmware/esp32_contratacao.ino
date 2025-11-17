@@ -1,100 +1,162 @@
 #include <DHT.h>
 #include <ArduinoJson.h>
 
-#define dhtpin 2
-#define dhttype DHT22
-#define trigger 7
-#define echo 8
-#define ldrpin A0
-#define ledG 13
-#define ledY 12
-#define ledR 11
+// ------------------------
+// DEFINIÇÃO DE PINOS
+// ------------------------
+#define DHTPIN 2
+#define DHTTYPE DHT22
 
+#define TRIGGER_PIN 7
+#define ECHO_PIN 8
+
+#define LDR_PIN A0
+
+#define LED_VERDE 13
+#define LED_AMARELO 12
+#define LED_VERMELHO 11
+
+// ------------------------
+// OBJETOS
+// ------------------------
+DHT dht(DHTPIN, DHTTYPE);
+
+// ------------------------
+// VARIÁVEIS DE SENSORES
+// ------------------------
 int dist = 0;
-int ldrvalor = 0;
+int ldrValor = 0;
 
-DHT dht(dhtpin, dhttype);
+// ------------------------
+// TURNOS DE FALA (CONFIGURÁVEIS)
+// ------------------------
+unsigned long tempoCandidato = 15000; // 15s
+unsigned long tempoTransicao = 5000;  // 5s
+unsigned long tempoRecrutador = 15000; // 15s
 
+// ------------------------
+// CONTROLE DO CICLO
+// ------------------------
+unsigned long inicioTurno = 0;
+int turnoAtual = 0; 
+/*
+0 = candidato fala (verde)
+1 = transição (amarelo)
+2 = recrutador fala (vermelho)
+*/
+
+// ------------------------
+// CONFIGURAÇÃO INICIAL
+// ------------------------
 void setup() {
-  Serial.begin(115200);     // Comunicação para gateway MQTT/HTTP
+  Serial.begin(115200);
+
   dht.begin();
 
-  pinMode(trigger, OUTPUT);
-  pinMode(echo, INPUT);
-  pinMode(ldrpin, INPUT);
+  pinMode(TRIGGER_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(LDR_PIN, INPUT);
 
-  pinMode(ledG, OUTPUT);
-  pinMode(ledY, OUTPUT);
-  pinMode(ledR, OUTPUT);
+  pinMode(LED_VERDE, OUTPUT);
+  pinMode(LED_AMARELO, OUTPUT);
+  pinMode(LED_VERMELHO, OUTPUT);
 
-  digitalWrite(ledG, LOW);
-  digitalWrite(ledY, LOW);
-  digitalWrite(ledR, LOW);
+  inicioTurno = millis();
 }
 
-void loop() {
-  // --- MEDIÇÃO DE DISTÂNCIA (HC-SR04) ---
-  digitalWrite(trigger, LOW);
+// ------------------------
+// LÊ DISTÂNCIA (AUXILIAR)
+// ------------------------
+int lerDistancia() {
+  digitalWrite(TRIGGER_PIN, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigger, HIGH);
+  digitalWrite(TRIGGER_PIN, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigger, LOW);
+  digitalWrite(TRIGGER_PIN, LOW);
 
-  dist = pulseIn(echo, HIGH);
-  dist = dist / 58;  // cm aproximado
+  long duracao = pulseIn(ECHO_PIN, HIGH);
+  int cm = duracao / 58;
 
-  // --- LEITURA DOS SENSORES AMBIENTAIS ---
-  int temp = dht.readTemperature();
-  int umi  = dht.readHumidity();
-  ldrvalor = analogRead(ldrpin);
+  return cm;
+}
 
-  // --- LÓGICA DO SEMÁFORO DE FALA ---
-  // Ajuste esses limites conforme a posição física do candidato
-  String estado_conversacao;
+// ------------------------
+// ATUALIZA O TURNO COM BASE NO CRONÔMETRO
+// ------------------------
+String atualizarTurno() {
+  unsigned long agora = millis();
+  unsigned long decorrido = agora - inicioTurno;
 
-  if (dist > 0 && dist < 50) {
-    // Candidato próximo do ponto de fala → candidato fala
-    digitalWrite(ledG, HIGH);
-    digitalWrite(ledY, LOW);
-    digitalWrite(ledR, LOW);
-    estado_conversacao = "candidato_fala";
-  } else if (dist >= 50 && dist < 100) {
-    // Região intermediária → pausa / troca de turno
-    digitalWrite(ledG, LOW);
-    digitalWrite(ledY, HIGH);
-    digitalWrite(ledR, LOW);
-    estado_conversacao = "pausa_troca_turno";
-  } else {
-    // Candidato longe → recrutador fala / candidato escuta
-    digitalWrite(ledG, LOW);
-    digitalWrite(ledY, LOW);
-    digitalWrite(ledR, HIGH);
-    estado_conversacao = "recrutador_fala";
+  if (turnoAtual == 0 && decorrido >= tempoCandidato) {
+    turnoAtual = 1;
+    inicioTurno = agora;
+  }
+  else if (turnoAtual == 1 && decorrido >= tempoTransicao) {
+    turnoAtual = 2;
+    inicioTurno = agora;
+  }
+  else if (turnoAtual == 2 && decorrido >= tempoRecrutador) {
+    turnoAtual = 0;
+    inicioTurno = agora;
   }
 
-  // Flags lógicas para uso no backend (MQTT/HTTP)
-  bool pode_falar  = (estado_conversacao == "candidato_fala");
-  bool pode_ouvir  = (estado_conversacao == "recrutador_fala" || estado_conversacao == "pausa_troca_turno");
+  // Atualiza LEDs conforme turno
+  if (turnoAtual == 0) {
+    digitalWrite(LED_VERDE, HIGH);
+    digitalWrite(LED_AMARELO, LOW);
+    digitalWrite(LED_VERMELHO, LOW);
+    return "candidato_fala";
+  }
 
-  // --- MONTA PAYLOAD JSON PARA ENVIAR AO GATEWAY (MQTT/HTTP) ---
+  if (turnoAtual == 1) {
+    digitalWrite(LED_VERDE, LOW);
+    digitalWrite(LED_AMARELO, HIGH);
+    digitalWrite(LED_VERMELHO, LOW);
+    return "transicao";
+  }
+
+  digitalWrite(LED_VERDE, LOW);
+  digitalWrite(LED_AMARELO, LOW);
+  digitalWrite(LED_VERMELHO, HIGH);
+  return "recrutador_fala";
+}
+
+// ------------------------
+// LOOP PRINCIPAL
+// ------------------------
+void loop() {
+
+  // ----- Lê sensores -----
+  dist = lerDistancia();
+  int temperatura = dht.readTemperature();
+  int umidade = dht.readHumidity();
+  ldrValor = analogRead(LDR_PIN);
+
+  // ----- Atualiza turno -----
+  String turno = atualizarTurno();
+
+  // Flags úteis para dashboards / decisões
+  bool podeFalar = (turno == "candidato_fala");
+  bool podeOuvir = (turno == "recrutador_fala" || turno == "transicao");
+
+  // ----- Monta JSON -----
   StaticJsonDocument<256> json;
 
-  json["distancia_cm"]      = dist;
-  json["temperatura_c"]     = temp;
-  json["umidade_pct"]       = umi;
-  json["luminosidade_raw"]  = ldrvalor;
+  json["distancia_cm"]     = dist;
+  json["temperatura_c"]    = temperatura;
+  json["umidade_pct"]      = umidade;
+  json["luminosidade_raw"] = ldrValor;
 
-  json["estado_conversacao"] = estado_conversacao;  // "candidato_fala", "recrutador_fala", "pausa_troca_turno"
-  json["pode_falar"]         = pode_falar;
-  json["pode_ouvir"]         = pode_ouvir;
+  json["turno"] = turno;
+  json["pode_falar"] = podeFalar;
+  json["pode_ouvir"] = podeOuvir;
 
-  // Campos extras para monitoramento de ambiente da sala de entrevista
-  json["alerta_conforto"] = (temp > 28 || temp < 18 || umi < 30 || umi > 70);
-  json["alerta_iluminacao"] = (ldrvalor < 200);  // exemplo: ambiente escuro
+  json["alerta_conforto"] = (temperatura > 28 || temperatura < 18 || umidade < 30 || umidade > 70);
+  json["alerta_luz_baixa"] = (ldrValor < 200);
 
-  // Envio para o PC/gateway (que publica em MQTT/HTTP)
+  // ----- Envia pela Serial -----
   serializeJson(json, Serial);
   Serial.println();
 
-  delay(2000); // taxa de atualização ~2s
+  delay(1000); // Taxa de envio
 }
