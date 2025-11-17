@@ -19,100 +19,131 @@
 ---
 
 ## 🧠 Sobre o Projeto
-O processo de contratação tradicional é lento, subjetivo e exige muitos recursos humanos. Em um contexto de trabalho cada vez mais digital, híbrido e automatizado, surgem desafios como:
+O processo de contratação atual ainda apresenta limitações importantes, mesmo em ambientes modernos. Em um cenário cada vez mais digital 
+e orientado a dados, surgem problemas como:
 
-- falhas de comunicação entre candidato e RH
-- dificuldade de acompanhar entrevistas em tempo real
-- pouca utilização de dados objetivos
-- processos repetitivos que poderiam ser automatizados
-<p align="center">
-Para o futuro do trabalho, é essencial criar soluções que tornem a contratação mais eficiente, justa e baseada em dados.
-</p>
+- falta de sincronização entre candidato e recrutador durante a conversa
+- dificuldade em registrar sinais do ambiente da entrevista em tempo real
+- ausência de indicadores objetivos sobre condições de comunicação
+- necessidade de automatizar etapas repetitivas e melhorar a precisão das avaliações
+
+- Para acompanhar o futuro do trabalho, torna-se fundamental desenvolver sistemas que tornem o processo de entrevista mais claro, eficiente
+e inteligente, utilizando sensores, automação e monitoramento contínuo para apoiar decisões e melhorar a experiência de todos os envolvidos.
 ---
+
 ## Solução Proposta 
 
-Este projeto apresenta um Sistema Inteligente de Contratação IoT, desenvolvido com ESP32 e comunicação MQTT, capaz de:
+Este projeto apresenta um Sistema Inteligente de Entrevistas IoT, desenvolvido com microcontroladores e comunicação MQTT/HTTP, capaz de:
 
-- Detectar presença do candidato via botão.
-- Simular resposta verbal usando um microfone analógico.
-- Monitorar temperatura e umidade do ambiente da entrevista (DHT22).
-- Exibir o status da vaga e do processo no display OLED.
-- Indicar o estado da contratação através de um LED RGB:
-- Verde → Vaga Aberta
-- Amarelo → Avaliando Candidato
-- Vermelho → Vaga Fechada
-- Enviar todos os dados em tempo real para um servidor MQTT, permitindo dashboards e automação externa.
-- Receber comandos via MQTT para abrir vaga, fechar vaga ou reavaliar.
+- Identificar a posição do candidato por meio do sensor ultrassônico (HC-SR04), definindo automaticamente quando ele deve falar ou apenas escutar.
+- Monitorar as condições da sala de entrevista com o sensor DHT22 (temperatura e umidade), garantindo conforto e registro ambiental.
+- Medir o nível de luminosidade do ambiente através do LDR, auxiliando na avaliação da qualidade da sala.
+- Exibir o estado da dinâmica de comunicação por meio de um semáforo de LEDs:
+    - Verde → Candidato fala
+    - Amarelo → Momento de transição
+    - Vermelho → Recrutador fala
 
+- Enviar todos os dados coletados — distância, temperatura, umidade, luminosidade e estado da conversa — para um servidor ou broker MQTT/HTTP, 
+permitindo dashboards, monitoramento remoto e automação externa.
+
+- Atuar como um módulo de apoio ao processo seletivo, oferecendo feedback objetivo e facilitando a análise de entrevistas em ambientes presenciais 
+ou híbridos.
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-- Hardware
-- ESP32 DevKit V1
-- DHT22
-- Microfone Analógico
-- Botão (presença)
-- OLED 128x64 SSD1306
-- LED RGB
-- WiFi integrado
-- Software / Protocolo
-- C++ (Arduino)
-- MQTT (HiveMQ Broker)
-- Wokwi IoT Simulator
-- WiFi.h, PubSubClient, Adafruit SSD1306
+Hardware
+
+- Arduino UNO (ou ESP32, dependendo da montagem final)
+- Sensor Ultrassônico HC-SR04 — detecção de posição do candidato
+- DHT22 — leitura de temperatura e umidade da sala
+- LDR — monitoramento da luminosidade ambiente
+- LEDs (Verde, Amarelo e Vermelho) — semáforo de fala/escuta
+- Cabeamento e resistores compatíveis
+- Conexão via USB para envio dos dados ao gateway MQTT/HTTP
+- Software / Comunicação
+- C++ (Arduino IDE)
+- JSON via Serial para integração com gateways
+- MQTT ou HTTP para envio dos dados a dashboards e sistemas externos
+- Wokwi IoT Simulator para prototipagem e testes
 
 ---
 
 ## 🔍 Como Funciona
 
-- ✔ Comunicação MQTT (publicação + comandos)
-- ✔ Simulação prática no Wokwi
-- ✔ Sensores funcionando juntos: botão, microfone, DHT22
-- ✔ Display OLED com status da contratação
-- ✔ LED RGB para estados do processo
-- ✔ Código organizado e extensívelhttps://chatgpt.com/g/g-67edab030ac881918ce8fa5c75a8e1b3-monday
-- ✔ Automação compatível com Node-RED, ThingsBoard, HiveMQ, etc.
+- ✔ Monitoramento contínuo via sensores:
+  - HC-SR04 para detectar a posição do candidato
+  - DHT22 para medir temperatura e umidade
+  - LDR para acompanhar a luminosidade da sala
+
+- ✔ Semáforo inteligente para organizar a comunicação na entrevista:
+
+  - Verde: candidato fala
+  - Amarelo: momento de transição
+  - Vermelho: recrutador fala
+
+- ✔ Envio dos dados em JSON pela Serial, permitindo integração com MQTT ou HTTP por meio de um gateway externo
+  -(ex.: Python, Node-RED, automações corporativas)
+- ✔ Totalmente testável no Wokwi, inclusive com visualização do semáforo e sensores em tempo real
+- ✔ Compatível com dashboards e automações como Node-RED, HiveMQ, ThingsBoard e APIs personalizadas
+- ✔ Código simples, modular e fácil de estender para novas regras ou novos sensores
 
 ---
 
 ## 🎯 Funcionalidades
 
-- Registrar presença do candidato
-- Simular resposta verbal (intensidade sonora)
-- Coletar dados ambientais
-- Atualizar estado da vaga em tempo real
-- Exibir dados em MQTT
-- Reagir a comandos enviados pelo RH
-
+- Detectar automaticamente a posição do candidato através do sensor ultrassônico,
+permitindo identificar quando ele está pronto para falar ou quando deve apenas escutar.
+- Coletar dados ambientais da sala de entrevista (temperatura, umidade e luminosidade) para registro e análise.
+- Controlar um semáforo inteligente com LEDs para indicar o estado da comunicação: candidato fala, transição ou recrutador fala.
+- Enviar todos os dados estruturados em JSON para integração com sistemas externos via MQTT ou HTTP (por meio de um gateway).
+- Fornecer informações em tempo real para dashboards, automações ou ferramentas do RH.
+- Permitir que o sistema reaja automaticamente conforme métricas de ambiente ou proximidade, facilitando processos de análise e tomada de decisão.
 ---
 
 ## Componentes Utilizados
 
-- ESP32 DevKit V1
-- DHT22 – Temperatura e Umidade
-- Microfone Analógico – Simula fala do candidato
-- Botão – Chegada / presença
-- OLED 128x64 SSD1306 – Status em tempo real
-- LED RGB (3 pinos separados) – Estado da vaga
-- Cabo Wi-Fi (simulado no Wokwi)
+- *Hardware*
+  - Arduino UNO (ou ESP32, dependendo da implementação final)
+  - HC-SR04 — sensor ultrassônico para detectar a posição do candidato
+  - DHT22 — sensor de temperatura e umidade
+  - LDR (fotoresistor) — leitura da luminosidade ambiente
+  - LEDs (Verde, Amarelo e Vermelho) — semáforo de fala/escuta
+  - Cabos e resistores para conexão
+  - Interface USB — comunicação com o gateway MQTT/HTTP
 
+- *Software / Comunicação*
+  - C++ (Arduino IDE)
+  - JSON via Serial para integração com automações externas
+  - MQTT ou HTTP através de gateway (ex.: Python, Node-RED)
+  
 ---
+
+## 🔗 Projeto no Wokwi: 
+
+https://wokwi.com/projects/423418460094367745
+
+--- 
+
 ## ⚙️ Como Rodar o Projeto
 
-### No Wokwi
+- Acesse o projeto no Wokwi:
+  - https://wokwi.com/projects/423418460094367745
+- Clique em Start Simulation para iniciar o sistema.
+- Observe o funcionamento dos sensores em tempo real:
+- Aproxime ou afaste o objeto do sensor ultrassônico → o semáforo muda entre candidato fala, transição e recrutador fala.
+- Acompanhe no console do Serial Monitor os valores enviados em JSON (distância, temperatura, umidade, luminosidade e estado da conversa).
 
-- Crie um novo projeto com ESP32.
-- Substitua o arquivo criado por:
-- esp32_contratacao.ino
-- diagram.json
-- Clique em Iniciar Simulação.
-- Abra o console MQTT (HiveMQ Web Client) para enviar comandos.
-- Observe o comportamento:
-- Pressione o botão → muda para “avaliando”
-- LED RGB muda de cor
-- Dados aparecem no MQTT em tempo real
+- Para integração com MQTT ou HTTP:
 
+  - Utilize um gateway externo (ex.: Python, Node-RED ou plataforma de automação).
+  - O gateway deve ler o JSON enviado pela Serial e publicar os dados em um tópico MQTT ou endpoint HTTP da sua escolha.
+
+-O dashboard externo poderá exibir:
+  - Estado do semáforo
+  - Presença/posição do candidato
+  - Ambiente da sala (temp/umidade/luz)
+  - Histórico e gráficos do processo de entrevista
 
 
 
