@@ -8,7 +8,8 @@
 
 ## 👥 Desenvolvedores
 - **Victoria Franceschini Pizza** – RM 550609  
-- **Eric de Carvalho Rodrigues** – RM 550249  
+- **Eric de Carvalho Rodrigues** – RM 550249
+- **Pedro Henrique Menezes** - RM 97432
 
 ---
 
